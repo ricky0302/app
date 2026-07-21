@@ -16,11 +16,34 @@
       justify-content: center;
       align-items: center;
       background-color: #fdf5e6;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, background-image 0.3s ease;
       touch-action: none; /* ダブルタップズームなどを無効化 */
       -webkit-user-select: none;
       user-select: none;
       font-family: sans-serif;
+      position: relative;
+    }
+
+    .fireworks-active {
+      background-image: radial-gradient(circle at 20% 20%, rgba(255,255,210,0.9) 0 10%, transparent 25%),
+                        radial-gradient(circle at 80% 25%, rgba(255,190,240,0.9) 0 8%, transparent 22%),
+                        radial-gradient(circle at 50% 70%, rgba(180,230,255,0.9) 0 12%, transparent 28%);
+      background-blend-mode: screen;
+    }
+
+    .firework-shot {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: 0 0 24px rgba(255,255,255,0.9), 0 0 48px rgba(255,180,60,0.85), 0 0 80px rgba(255,255,255,0.6);
+      animation: fireworkShot var(--d) ease-out forwards;
+    }
+
+    @keyframes fireworkShot {
+      0% { transform: scale(0.1); opacity: 1; }
+      60% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.8); opacity: 0; }
     }
 
     /* 画面中央に大きく表示されるキャラクター */
@@ -29,7 +52,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 18px;
       padding: 8px 10px;
       border-radius: 24px;
       background: transparent;
@@ -146,46 +169,61 @@
   <script>
     // キャラクターと背景色のリスト
     const items = [
-      { emoji: '🚓', name: 'ぱとかー', color: '#e6e6fa' },
-      { emoji: '🚓', name: 'ぱとかー', color: '#e6e6fa' },
-      { emoji: '🚓', name: 'ぱとかー', color: '#e6e6fa' },
-      { emoji: '🚑', name: 'きゅうきゅうしゃ', color: '#f0f8ff' },
-      { emoji: '🚑', name: 'きゅうきゅうしゃ', color: '#f0f8ff' },
-      { emoji: '🚒', name: 'しょうぼうしゃ', color: '#ffe4e1' },
-      { emoji: '🚒', name: 'しょうぼうしゃ', color: '#ffe4e1' },
-      { emoji: '🚌', name: 'ばす', color: '#ffefd5' },
-      { emoji: '🚌', name: 'ばす', color: '#ffefd5' },
-      { emoji: '🚜', name: 'とらくたー', color: '#fffacd' },
-      { emoji: '🚚', name: 'とらっく', color: '#f5fffa' },
-      { emoji: '🚗', name: 'くるま', color: '#e0ffff' },
-      { emoji: '🐧', name: 'ぺんぎん', color: '#e0ffff' },
-      { emoji: '🐧', name: 'ぺんぎん', color: '#e0ffff' },
-      { emoji: '🐧', name: 'ぺんぎん', color: '#e0ffff' },
-      { emoji: '🐶', name: 'いぬ', color: '#f5deb3' },
-      { emoji: '🐶', name: 'いぬ', color: '#f5deb3' },
-      { emoji: '🐋', name: 'くじら', color: '#d0f0c0' },
-      { emoji: '🐙', name: 'たこ', color: '#ffe4e1' },
-      { emoji: '🐢', name: 'かめ', color: '#e6ffe6' },
-      { emoji: '🐄', name: 'うし', color: '#fff8dc' },
-      { emoji: '🐸', name: 'かえる', color: '#e0ffe0' },
-      { emoji: '🐼', name: 'ぱんだ', color: '#f0f8ff' },
-      { emoji: '🥕', name: 'にんじん', color: '#fff5ee' },
-      { emoji: '🥕', name: 'にんじん', color: '#fff5ee' },
-      { emoji: '🥦', name: 'ぶろっこりー', color: '#f5fff5' },
-      { emoji: '🥬', name: 'きゃべつ', color: '#f0fff0' },
-      { emoji: '🥔', name: 'じゃがいも', color: '#fff8dc' },
-      { emoji: '🧅', name: 'たまねぎ', color: '#fff0f5' },
-      { emoji: '🫑', name: 'ぴーまん', color: '#f0fff0' },
-      { emoji: '🍌', name: 'ばなな', color: '#ffffe0' },
-      { emoji: '🍌', name: 'ばなな', color: '#ffffe0' },
-      { emoji: '🍉', name: 'すいか', color: '#ffe4e1' },
-      { emoji: '🍉', name: 'すいか', color: '#ffe4e1' },
-      { emoji: '🍎', name: 'りんご', color: '#ffe4e1' },
-      { emoji: '🍓', name: 'いちご', color: '#ffe4f0' }
+      { emoji: '🚓', name: 'ぱとかー', category: 'vehicle', color: '#e6e6fa' },
+      { emoji: '🚓', name: 'ぱとかー', category: 'vehicle', color: '#e6e6fa' },
+      { emoji: '🚓', name: 'ぱとかー', category: 'vehicle', color: '#e6e6fa' },
+      { emoji: '🚑', name: 'きゅうきゅうしゃ', category: 'vehicle', color: '#f0f8ff' },
+      { emoji: '🚑', name: 'きゅうきゅうしゃ', category: 'vehicle', color: '#f0f8ff' },
+      { emoji: '🚒', name: 'しょうぼうしゃ', category: 'vehicle', color: '#ffe4e1' },
+      { emoji: '🚒', name: 'しょうぼうしゃ', category: 'vehicle', color: '#ffe4e1' },
+      { emoji: '🚌', name: 'ばす', category: 'vehicle', color: '#ffefd5' },
+      { emoji: '🚌', name: 'ばす', category: 'vehicle', color: '#ffefd5' },
+      { emoji: '🚜', name: 'とらくたー', category: 'vehicle', color: '#fffacd' },
+      { emoji: '🚚', name: 'とらっく', category: 'vehicle', color: '#f5fffa' },
+      { emoji: '🚗', name: 'くるま', category: 'vehicle', color: '#e0ffff' },
+      { emoji: '🐧', name: 'ぺんぎん', category: 'animal', color: '#e0ffff' },
+      { emoji: '🐧', name: 'ぺんぎん', category: 'animal', color: '#e0ffff' },
+      { emoji: '🐧', name: 'ぺんぎん', category: 'animal', color: '#e0ffff' },
+      { emoji: '🐶', name: 'いぬ', category: 'animal', color: '#f5deb3' },
+      { emoji: '🐶', name: 'いぬ', category: 'animal', color: '#f5deb3' },
+      { emoji: '🐋', name: 'くじら', category: 'animal', color: '#d0f0c0' },
+      { emoji: '🐙', name: 'たこ', category: 'animal', color: '#ffe4e1' },
+      { emoji: '🐢', name: 'かめ', category: 'animal', color: '#e6ffe6' },
+      { emoji: '🐄', name: 'うし', category: 'animal', color: '#fff8dc' },
+      { emoji: '🐸', name: 'かえる', category: 'animal', color: '#e0ffe0' },
+      { emoji: '🐼', name: 'ぱんだ', category: 'animal', color: '#f0f8ff' },
+      { emoji: '🥕', name: 'にんじん', category: 'vegetable', color: '#fff5ee' },
+      { emoji: '🥕', name: 'にんじん', category: 'vegetable', color: '#fff5ee' },
+      { emoji: '🥦', name: 'ぶろっこりー', category: 'vegetable', color: '#f5fff5' },
+      { emoji: '🥬', name: 'きゃべつ', category: 'vegetable', color: '#f0fff0' },
+      { emoji: '🥔', name: 'じゃがいも', category: 'vegetable', color: '#fff8dc' },
+      { emoji: '🧅', name: 'たまねぎ', category: 'vegetable', color: '#fff0f5' },
+      { emoji: '🫑', name: 'ぴーまん', category: 'vegetable', color: '#f0fff0' },
+      { emoji: '🍌', name: 'ばなな', category: 'fruit', color: '#ffffe0' },
+      { emoji: '🍌', name: 'ばなな', category: 'fruit', color: '#ffffe0' },
+      { emoji: '🍉', name: 'すいか', category: 'fruit', color: '#ffe4e1' },
+      { emoji: '🍉', name: 'すいか', category: 'fruit', color: '#ffe4e1' },
+      { emoji: '🍎', name: 'りんご', category: 'fruit', color: '#ffe4e1' },
+      { emoji: '🍓', name: 'いちご', category: 'fruit', color: '#ffe4f0' }
     ];
 
     const particles = ['✨', '🎵', '🫧', '⭐', '🎈'];
+    const fireworksChance = 0.05;
     let audioCtx;
+    let japaneseVoice = null;
+
+    function updateJapaneseVoice() {
+      const voices = speechSynthesis.getVoices();
+      japaneseVoice = voices.find(v => v.lang === 'ja-JP' && /Haruka|Kyoko|Mei|Aoi|Sayaka|Sakura|Hikari|Yui|Miku/.test(v.name)) ||
+                     voices.find(v => v.lang === 'ja-JP') ||
+                     voices.find(v => v.lang && v.lang.startsWith('ja')) ||
+                     null;
+    }
+
+    if (window.speechSynthesis) {
+      updateJapaneseVoice();
+      speechSynthesis.onvoiceschanged = updateJapaneseVoice;
+    }
 
     const startScreen = document.getElementById('start-screen');
     const startBtn = document.getElementById('start-btn');
@@ -215,42 +253,185 @@
       itemName.textContent = randomItem.name;
       document.body.style.backgroundColor = randomItem.color;
 
+      const isFireworks = Math.random() < fireworksChance;
+      if (isFireworks) {
+        triggerFireworks();
+      }
+
       // アニメーションをリセットして再再生
       characterDisplay.classList.remove('pop-in');
       void characterDisplay.offsetWidth; // リフローを強制してアニメーションをリセット
       characterDisplay.classList.add('pop-in');
 
       // 音を鳴らす
-      playSound();
+      playSound(randomItem.category, isFireworks);
+
+      // ひらがなを読み上げる
+      speakJapanese(randomItem.name);
 
       // エフェクトを出す
       createParticles(e.clientX, e.clientY);
     });
 
     // 楽しい音を生成する処理（Web Audio API）
-    function playSound() {
+    function playSound(category, fireworks) {
       if (!audioCtx) return;
       if (audioCtx.state === 'suspended') audioCtx.resume();
 
-      // 適当に叩いても音楽のように聞こえるドレミファソラシドの周波数
-      const notes = [261.63, 329.63, 392.00, 523.25, 659.25]; // ペンタトニックスケール
-      const randomNote = notes[Math.floor(Math.random() * notes.length)];
+      if (fireworks) {
+        playFanfare();
+        return;
+      }
 
+      switch (category) {
+        case 'vehicle':
+          playVehicleSound();
+          break;
+        case 'vegetable':
+        case 'fruit':
+          playCutePoko();
+          break;
+        case 'animal':
+          playAnimalSound();
+          break;
+        default:
+          playDefaultSound();
+      }
+    }
+
+    function playVehicleSound() {
+      const now = audioCtx.currentTime;
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const filter = audioCtx.createBiquadFilter();
+      const gainNode = audioCtx.createGain();
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      osc1.type = 'sine';
+      osc2.type = 'triangle';
+      osc1.frequency.setValueAtTime(110, now);
+      osc2.frequency.setValueAtTime(176, now);
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(650, now);
+      filter.Q.setValueAtTime(4, now);
+      gainNode.gain.setValueAtTime(0.001, now);
+      gainNode.gain.linearRampToValueAtTime(0.25, now + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+      filter.frequency.linearRampToValueAtTime(420, now + 0.25);
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 0.45);
+      osc2.stop(now + 0.45);
+    }
+
+    function playCutePoko() {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const filter = audioCtx.createBiquadFilter();
+      const gainNode = audioCtx.createGain();
+      osc.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(640, now);
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(900, now);
+      filter.Q.setValueAtTime(1.2, now);
+      gainNode.gain.setValueAtTime(0.001, now);
+      gainNode.gain.linearRampToValueAtTime(0.18, now + 0.04);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+      osc.start(now);
+      osc.stop(now + 0.32);
+    }
+
+    function playAnimalSound() {
+      const now = audioCtx.currentTime;
       const osc = audioCtx.createOscillator();
       const gainNode = audioCtx.createGain();
       osc.connect(gainNode);
       gainNode.connect(audioCtx.destination);
-
-      // コロコロとした丸い音（サイン波）
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(randomNote, audioCtx.currentTime);
-      
-      // 音量調整（フェードアウトさせてポン！という感じに）
-      gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.linearRampToValueAtTime(880, now + 0.25);
+      gainNode.gain.setValueAtTime(0.001, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.35, now + 0.05);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    }
 
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.4);
+    function playDefaultSound() {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, now);
+      gainNode.gain.setValueAtTime(0.001, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.3, now + 0.03);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    }
+
+    function playFanfare() {
+      const now = audioCtx.currentTime;
+      const notes = [523.25, 659.25, 783.99, 880.00];
+      notes.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        osc.type = index === 0 ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq, now + index * 0.08);
+        gainNode.gain.setValueAtTime(0.001, now + index * 0.08);
+        gainNode.gain.linearRampToValueAtTime(0.18, now + index * 0.08 + 0.04);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.45);
+        osc.start(now + index * 0.08);
+        osc.stop(now + index * 0.08 + 0.45);
+      });
+    }
+
+    function triggerFireworks() {
+      document.body.classList.add('fireworks-active');
+      createFireworks();
+      setTimeout(() => {
+        document.body.classList.remove('fireworks-active');
+      }, 1200);
+    }
+
+    function createFireworks() {
+      for (let i = 0; i < 8; i++) {
+        const shot = document.createElement('div');
+        shot.className = 'firework-shot';
+        shot.style.left = `${10 + Math.random() * 80}%`;
+        shot.style.top = `${10 + Math.random() * 70}%`;
+        shot.style.setProperty('--s', `${80 + Math.random() * 80}px`);
+        shot.style.setProperty('--d', `${0.9 + Math.random() * 0.4}s`);
+        shot.style.background = `radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(${180 + Math.random()*70},${120 + Math.random()*90},${220 + Math.random()*35},0.85) 60%, transparent 90%)`;
+        document.body.appendChild(shot);
+        setTimeout(() => shot.remove(), 1200);
+      }
+    }
+
+    function speakJapanese(text) {
+      if (!window.speechSynthesis) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ja-JP';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.0;
+      utterance.volume = 0.92;
+      if (japaneseVoice) {
+        utterance.voice = japaneseVoice;
+      }
+      utterance.onstart = () => {
+        // 少し自然なリズムにするために開始前にキャンセルは行わない
+      };
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
     }
 
     // キラキラエフェクトを作る処理
