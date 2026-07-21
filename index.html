@@ -25,13 +25,40 @@
 
     /* 画面中央に大きく表示されるキャラクター */
     #character-display {
-      font-size: 150px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 8px 10px;
+      border-radius: 24px;
+      background: transparent;
+      box-shadow: none;
       line-height: 1;
-      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
       transform: scale(0);
       transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 10;
       pointer-events: none; /* タップの邪魔にならないようにする */
+      max-width: min(88vw, 320px);
+      text-align: center;
+    }
+
+    #emoji-char {
+      font-size: 120px;
+      line-height: 1;
+      display: block;
+      margin: 0;
+    }
+
+    #item-name {
+      font-size: 28px;
+      color: #333;
+      font-weight: 700;
+      font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+      margin-top: 8px;
     }
 
     /* 飛び出すアニメーション */
@@ -111,23 +138,50 @@
   <div id="lock-btn">📱</div>
 
   <!-- キャラクターが表示される場所 -->
-  <div id="character-display">🎁</div>
+  <div id="character-display">
+    <span id="emoji-char">🎁</span>
+    <div id="item-name">ぽん！</div>
+  </div>
 
   <script>
     // キャラクターと背景色のリスト
     const items = [
-      { emoji: '🚒', color: '#ffe4e1' }, // 消防車 (赤系)
-      { emoji: '🚑', color: '#f0f8ff' }, // 救急車 (白・水色系)
-      { emoji: '🚓', color: '#e6e6fa' }, // パトカー (紫系)
-      { emoji: '🚜', color: '#fffacd' }, // ショベルカー(トラクター) (黄系)
-      { emoji: '🚚', color: '#f5fffa' }, // ごみ収集車(トラック) (ミント系)
-      { emoji: '🚌', color: '#ffefd5' }, // 路線バス (オレンジ系)
-      { emoji: '🐧', color: '#e0ffff' }, // ペンギン (水色系)
-      { emoji: '🦁', color: '#ffdab9' }, // ライオン (桃色系)
-      { emoji: '🐶', color: '#f5deb3' }, // 犬 (小麦色系)
-      { emoji: '🐘', color: '#f0fff0' }, // ゾウ (薄緑系)
-      { emoji: '🐱', color: '#fff0f5' }, // ネコ (薄ピンク系)
-      { emoji: '🐰', color: '#fffff0' }  // ウサギ (アイボリー系)
+      { emoji: '🚓', name: 'ぱとかー', color: '#e6e6fa' },
+      { emoji: '🚓', name: 'ぱとかー', color: '#e6e6fa' },
+      { emoji: '🚓', name: 'ぱとかー', color: '#e6e6fa' },
+      { emoji: '🚑', name: 'きゅうきゅうしゃ', color: '#f0f8ff' },
+      { emoji: '🚑', name: 'きゅうきゅうしゃ', color: '#f0f8ff' },
+      { emoji: '🚒', name: 'しょうぼうしゃ', color: '#ffe4e1' },
+      { emoji: '🚒', name: 'しょうぼうしゃ', color: '#ffe4e1' },
+      { emoji: '🚌', name: 'ばす', color: '#ffefd5' },
+      { emoji: '🚌', name: 'ばす', color: '#ffefd5' },
+      { emoji: '🚜', name: 'とらくたー', color: '#fffacd' },
+      { emoji: '🚚', name: 'とらっく', color: '#f5fffa' },
+      { emoji: '🚗', name: 'くるま', color: '#e0ffff' },
+      { emoji: '🐧', name: 'ぺんぎん', color: '#e0ffff' },
+      { emoji: '🐧', name: 'ぺんぎん', color: '#e0ffff' },
+      { emoji: '🐧', name: 'ぺんぎん', color: '#e0ffff' },
+      { emoji: '🐶', name: 'いぬ', color: '#f5deb3' },
+      { emoji: '🐶', name: 'いぬ', color: '#f5deb3' },
+      { emoji: '🐋', name: 'くじら', color: '#d0f0c0' },
+      { emoji: '🐙', name: 'たこ', color: '#ffe4e1' },
+      { emoji: '🐢', name: 'かめ', color: '#e6ffe6' },
+      { emoji: '🐄', name: 'うし', color: '#fff8dc' },
+      { emoji: '🐸', name: 'かえる', color: '#e0ffe0' },
+      { emoji: '🐼', name: 'ぱんだ', color: '#f0f8ff' },
+      { emoji: '🥕', name: 'にんじん', color: '#fff5ee' },
+      { emoji: '🥕', name: 'にんじん', color: '#fff5ee' },
+      { emoji: '🥦', name: 'ぶろっこりー', color: '#f5fff5' },
+      { emoji: '🥬', name: 'きゃべつ', color: '#f0fff0' },
+      { emoji: '🥔', name: 'じゃがいも', color: '#fff8dc' },
+      { emoji: '🧅', name: 'たまねぎ', color: '#fff0f5' },
+      { emoji: '🫑', name: 'ぴーまん', color: '#f0fff0' },
+      { emoji: '🍌', name: 'ばなな', color: '#ffffe0' },
+      { emoji: '🍌', name: 'ばなな', color: '#ffffe0' },
+      { emoji: '🍉', name: 'すいか', color: '#ffe4e1' },
+      { emoji: '🍉', name: 'すいか', color: '#ffe4e1' },
+      { emoji: '🍎', name: 'りんご', color: '#ffe4e1' },
+      { emoji: '🍓', name: 'いちご', color: '#ffe4f0' }
     ];
 
     const particles = ['✨', '🎵', '🫧', '⭐', '🎈'];
@@ -136,6 +190,8 @@
     const startScreen = document.getElementById('start-screen');
     const startBtn = document.getElementById('start-btn');
     const characterDisplay = document.getElementById('character-display');
+    const emojiChar = document.getElementById('emoji-char');
+    const itemName = document.getElementById('item-name');
     const lockBtn = document.getElementById('lock-btn');
 
     // はじめるボタンの処理（音を鳴らす準備）
@@ -155,7 +211,8 @@
       const randomItem = items[Math.floor(Math.random() * items.length)];
       
       // キャラクターと背景色を変更
-      characterDisplay.textContent = randomItem.emoji;
+      emojiChar.textContent = randomItem.emoji;
+      itemName.textContent = randomItem.name;
       document.body.style.backgroundColor = randomItem.color;
 
       // アニメーションをリセットして再再生
